@@ -8,9 +8,9 @@ require('dotenv').config()
 
 const commonProxy = {
   onProxyReq: (proxyReq, req, res) => {
-    proxyReq.setHeader('Referer', 'http://localhost:443/')
+    proxyReq.setHeader('Referer', process.env.TARGET)
   },
-  target: 'http://localhost:443/',
+  target: process.env.TARGET,
   changeOrigin: true
 }
 
