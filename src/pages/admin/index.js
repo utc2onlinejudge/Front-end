@@ -22,7 +22,7 @@ import './style.less'
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
-
+Vue.config.devtools = false
 Vue.use(VueAnalytics, {
   id: GOOGLE_ANALYTICS_ID,
   router

@@ -55,13 +55,13 @@ export const JUDGE_STATUS = {
   '7': {
     name: 'Judging',
     color: 'blue',
-    type: 'info'
+    type: 'primary'
   },
   '8': {
     name: 'Partial Accepted',
     short: 'PAC',
     color: 'blue',
-    type: 'info'
+    type: 'primary'
   },
   '9': {
     name: 'Submitting',
@@ -79,21 +79,22 @@ export const CONTEST_STATUS = {
 export const CONTEST_STATUS_REVERSE = {
   '1': {
     name: 'Not Started',
-    color: 'yellow'
+    color: 'primary'
   },
   '0': {
     name: 'Underway',
-    color: 'green'
+    color: 'success'
   },
   '-1': {
     name: 'Ended',
-    color: 'red'
+    color: 'error'
   }
 }
 
 export const RULE_TYPE = {
   ACM: 'ACM',
-  OI: 'OI'
+  OI: 'OI',
+  experience: 'experience'
 }
 
 export const CONTEST_TYPE = {
@@ -127,3 +128,41 @@ export function buildProblemCodeKey (problemID, contestID = null) {
 }
 
 export const GOOGLE_ANALYTICS_ID = 'UA-111499601-1'
+
+export const USER_GRADE = {
+  '0': {
+    name: 'Newbie',
+    short: '0',
+    color: 'gray'
+  },
+  '1': {
+    name: 'Pupil',
+    short: '1',
+    color: 'green'
+  },
+  '2': {
+    name: 'Specialist',
+    short: '2',
+    color: 'green'
+  },
+  '3': {
+    name: 'Expert',
+    short: '3',
+    color: 'blue'
+  },
+  '4': {
+    name: 'Candidate master',
+    short: '4',
+    color: '#a0a'
+  },
+  '5': {
+    name: 'Master',
+    short: '5',
+    color: '#FF8C00 '
+  },
+  '6': {
+    name: 'Grandmaster',
+    short: '6',
+    color: 'red'
+  }
+}

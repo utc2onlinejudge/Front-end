@@ -25,6 +25,9 @@ UploadFile = (function (_super) {
   __extends(UploadFile, _super);
 
   UploadFile.i18n = {
+    'vi-VN': {
+      uploadfile: 'upload file'
+    },
     'zh-CN': {
       uploadfile: '上传文件'
     },

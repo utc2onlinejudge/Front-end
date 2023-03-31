@@ -51,7 +51,7 @@
   .panel-extra {
     line-height: 40px;
     .ivu-input-icon {
-      line-height: 40px;
+      line-height: 32px;
     }
     ul.filter {
       > li {
@@ -61,7 +61,6 @@
     }
   }
   .panel-body {
-    word-break: break-all;
-    word-wrap: break-word;
+    word-break: break-word;
   }
 </style>

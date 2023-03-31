@@ -3,19 +3,19 @@
     <Col :span="22">
     <panel shadow v-if="contests.length" class="contest">
       <div slot="title">
-        <Button type="text"  class="contest-title" @click="goContest">{{contests[index].title}}</Button>
+        <Button type="text"  class="contest-title" @click="goContest"><Icon type="md-ribbon" /> {{contests[index].title}}</Button>
       </div>
       <Carousel v-model="index" trigger="hover" autoplay :autoplay-speed="6000" class="contest">
         <CarouselItem v-for="(contest, index) of contests" :key="index">
           <div class="contest-content">
             <div class="contest-content-tags">
-              <Button type="info" shape="circle" size="small" icon="calendar">
+              <Button type="info" shape="circle" size="small" icon="md-calendar">
                 {{contest.start_time | localtime('YYYY-M-D HH:mm') }}
               </Button>
-              <Button type="success" shape="circle" size="small" icon="android-time">
+              <Button type="success" shape="circle" size="small" icon="ios-time">
                 {{getDuration(contest.start_time, contest.end_time)}}
               </Button>
-              <Button type="warning" shape="circle" size="small" icon="trophy">
+              <Button type="warning" shape="circle" size="small" icon="ios-trophy">
                 {{contest.rule_type}}
               </Button>
             </div>
@@ -49,9 +49,13 @@
       }
     },
     mounted () {
-      let params = {status: CONTEST_STATUS.NOT_START}
+      let params = { status: CONTEST_STATUS.ENDED }
       api.getContestList(0, 5, params).then(res => {
-        this.contests = res.data.data.results
+        for (let contest of res.data.data.results) {
+          if (contest['contest_type'] === 'Public') {
+            this.contests.push(contest)
+          }
+        }
       })
     },
     methods: {

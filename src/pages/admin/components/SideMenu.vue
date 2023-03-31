@@ -1,9 +1,9 @@
 <template>
   <el-menu class="vertical_menu"
            :router="true" :default-active="currentPath">
-    <div class="logo">
-      <img src="../../../assets/logo.svg" alt="oj admin"/>
-    </div>
+    <!-- <div class="logo">
+      <a href="/" title="Xem trang"><img src="/static/img/favicon.png" alt="oj admin"/></a>
+    </div> -->
     <el-menu-item index="/"><i class="el-icon-fa-dashboard"></i>{{$t('m.Dashboard')}}</el-menu-item>
     <el-submenu v-if="isSuperAdmin" index="general">
       <template slot="title"><i class="el-icon-menu"></i>{{$t('m.General')}}</template>

@@ -8,7 +8,7 @@
             <li>
               <Dropdown @on-click="handleResultChange">
                 <span>{{status}}
-                  <Icon type="arrow-down-b"></Icon>
+                  <Icon type="md-arrow-dropdown"></Icon>
                 </span>
                 <Dropdown-menu slot="list">
                   <Dropdown-item name="">{{$t('m.All')}}</Dropdown-item>
@@ -18,8 +18,6 @@
                 </Dropdown-menu>
               </Dropdown>
             </li>
-
-
             <li>
               <i-switch size="large" v-model="formFilter.myself" @on-change="handleQueryChange">
                 <span slot="open">{{$t('m.Mine')}}</span>
@@ -31,12 +29,25 @@
             </li>
 
             <li>
-              <Button type="info" icon="refresh" @click="getSubmissions">{{$t('m.Refresh')}}</Button>
+              <Button type="info" icon="md-refresh" @click="getSubmissions">{{$t('m.Refresh')}}</Button>
             </li>
           </ul>
         </div>
         <Table stripe :disabled-hover="true" :columns="columns" :data="submissions" :loading="loadingTable"></Table>
         <Pagination :total="total" :page-size="limit" @on-change="changeRoute" :current.sync="page"></Pagination>
+      </Panel>
+    </div>
+    <div v-if="!contestID" id="right-column">
+      <Panel shadow style="padding-top: 0px;padding-bottom: 10px;min-height: 400px;">
+        <div slot="title" style="margin-left: -10px;margin-bottom: -10px;">{{$t('m.Ranklist_Title')}}</div>
+        <ol style="margin-left: 40px;margin-bottom: 20px;">
+          <li v-for="u in dataRank" :key="u.id" style="margin-top:4px;">
+            <a :style="'font-weight: 600;color: ' + u.color" :href="'/user-home?username=' + u.user.username"
+               :title=" u.title + ' ' + u.user.username">
+            {{u.user.username}}
+            </a> - {{u.accepted_number}} bài
+          </li>
+        </ol>
       </Panel>
     </div>
   </div>
@@ -45,7 +56,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import api from '@oj/api'
-  import { JUDGE_STATUS, USER_TYPE } from '@/utils/constants'
+  import { RULE_TYPE, JUDGE_STATUS, USER_TYPE, USER_GRADE } from '@/utils/constants'
   import utils from '@/utils/utils'
   import time from '@/utils/time'
   import Pagination from '@/pages/oj/components/Pagination'
@@ -57,6 +68,8 @@
     },
     data () {
       return {
+        dataRank: [],
+        rankLimit: 30,
         formFilter: {
           myself: false,
           result: '',
@@ -71,23 +84,36 @@
             }
           },
           {
-            title: this.$i18n.t('m.ID'),
+            title: this.$i18n.t('m.Author'),
             align: 'center',
             render: (h, params) => {
-              if (params.row.show_link) {
-                return h('span', {
+              if (params.row.title) {
+                return h('a', {
                   style: {
-                    color: '#57a3f3',
-                    cursor: 'pointer'
+                    'display': 'inline-block',
+                    'margin-left': '5px',
+                    'font-weight': 600,
+                    'color': params.row.title_color
                   },
-                  on: {
-                    click: () => {
-                      this.$router.push('/status/' + params.row.id)
-                    }
+                  attrs: {
+                    'title': params.row.title + ' ' + params.row.username,
+                    'href': '/user-home?username=' + params.row.username
                   }
-                }, params.row.id.slice(0, 12))
+                }, params.row.username)
               } else {
-                return h('span', params.row.id.slice(0, 12))
+                return h('a', {
+                  style: {
+                    'display': 'inline-block',
+                    'max-width': '150px',
+                    'margin-left': '5px',
+                    'font-weight': 600,
+                    'color': USER_GRADE[params.row.grade].color
+                  },
+                  attrs: {
+                    'title': USER_GRADE[params.row.grade].name + ' ' + params.row.username,
+                    'href': '/user-home?username=' + params.row.username
+                  }
+                }, params.row.username)
               }
             }
           },
@@ -97,7 +123,7 @@
             render: (h, params) => {
               return h('Tag', {
                 props: {
-                  color: JUDGE_STATUS[params.row.result].color
+                  color: JUDGE_STATUS[params.row.result].type
                 }
               }, this.$i18n.t('m.' + JUDGE_STATUS[params.row.result].name.replace(/ /g, '_')))
             }
@@ -106,24 +132,14 @@
             title: this.$i18n.t('m.Problem'),
             align: 'center',
             render: (h, params) => {
-              return h('span',
+              return h('a',
                 {
                   style: {
                     color: '#57a3f3',
                     cursor: 'pointer'
                   },
-                  on: {
-                    click: () => {
-                      if (this.contestID) {
-                        this.$router.push(
-                          {
-                            name: 'contest-problem-details',
-                            params: {problemID: params.row.problem, contestID: this.contestID}
-                          })
-                      } else {
-                        this.$router.push({name: 'problem-details', params: {problemID: params.row.problem}})
-                      }
-                    }
+                  attrs: {
+                    'href': this.contestID ? '/contest/' + this.contestID + '/problem/' + params.row.problem : '/problem/' + params.row.problem
                   }
                 },
                 params.row.problem)
@@ -149,31 +165,29 @@
             key: 'language'
           },
           {
-            title: this.$i18n.t('m.Author'),
+            title: this.$i18n.t('m.ID'),
             align: 'center',
             render: (h, params) => {
-              return h('a', {
-                style: {
-                  'display': 'inline-block',
-                  'max-width': '150px'
-                },
-                on: {
-                  click: () => {
-                    this.$router.push(
-                      {
-                        name: 'user-home',
-                        query: {username: params.row.username}
-                      })
+              if (params.row.show_link) {
+                return h('a', {
+                  style: {
+                    color: '#57a3f3',
+                    cursor: 'pointer'
+                  },
+                  attrs: {
+                    'href': '/status/' + params.row.id + '?problem=' + params.row.problem
                   }
-                }
-              }, params.row.username)
+                }, params.row.id.slice(0, 12))
+              } else {
+                return h('span', params.row.id.slice(0, 12))
+              }
             }
           }
         ],
         loadingTable: false,
         submissions: [],
         total: 30,
-        limit: 12,
+        limit: 15,
         page: 1,
         contestID: '',
         problemID: '',
@@ -184,6 +198,7 @@
     },
     mounted () {
       this.init()
+      this.getRankData()
       this.JUDGE_STATUS = Object.assign({}, JUDGE_STATUS)
       // 去除submitting的状态 和 两个
       delete this.JUDGE_STATUS['9']
@@ -203,6 +218,16 @@
         }
         this.routeName = this.$route.name
         this.getSubmissions()
+      },
+      getRankData () {
+        api.getUserRank(0, this.rankLimit, RULE_TYPE.ACM).then(res => {
+          this.dataRank = res.data.data.results
+          for (let i in this.dataRank) {
+            this.dataRank[i]['color'] = USER_GRADE[this.dataRank[i].grade].color
+            this.dataRank[i]['title'] = USER_GRADE[this.dataRank[i].grade].name
+          }
+        }).catch(() => {
+        })
       },
       buildQuery () {
         return {
@@ -297,7 +322,7 @@
       ...mapGetters(['isAuthenticated', 'user']),
       title () {
         if (!this.contestID) {
-          return this.$i18n.t('m.Status')
+          return this.$i18n.t('m.StatusTitle')
         } else if (this.problemID) {
           return this.$i18n.t('m.Problem_Submissions')
         } else {
@@ -340,9 +365,10 @@
         margin-right: -10px;
       }
     }
-    #contest-menu {
+    #right-column {
       flex: none;
-      width: 210px;
+      width: 300px;
+      max-width: 300px;
     }
   }
 </style>

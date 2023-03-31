@@ -2,13 +2,13 @@
   <Row type="flex">
     <Col :span="24">
     <Panel id="contest-card" shadow>
-      <div slot="title">{{query.rule_type === '' ? this.$i18n.t('m.All') : query.rule_type}} {{$t('m.Contests')}}</div>
+      <div slot="title">{{query.rule_type === '' ? this.$i18n.t('m.All') : query.rule_type}} {{$t('m.Contests').toLowerCase()}}</div>
       <div slot="extra">
         <ul class="filter">
           <li>
-            <Dropdown @on-click="onRuleChange">
+            <Dropdown style="cursor:pointer;" @on-click="onRuleChange">
               <span>{{query.rule_type === '' ? this.$i18n.t('m.Rule') : this.$i18n.t('m.' + query.rule_type)}}
-                <Icon type="arrow-down-b"></Icon>
+                <Icon type="md-arrow-dropdown"></Icon>
               </span>
               <Dropdown-menu slot="list">
                 <Dropdown-item name="">{{$t('m.All')}}</Dropdown-item>
@@ -18,9 +18,9 @@
             </Dropdown>
           </li>
           <li>
-            <Dropdown @on-click="onStatusChange">
+            <Dropdown style="cursor:pointer;" @on-click="onStatusChange">
               <span>{{query.status === '' ? this.$i18n.t('m.Status') : this.$i18n.t('m.' + CONTEST_STATUS_REVERSE[query.status].name.replace(/ /g,"_"))}}
-                <Icon type="arrow-down-b"></Icon>
+                <Icon type="md-arrow-dropdown"></Icon>
               </span>
               <Dropdown-menu slot="list">
                 <Dropdown-item name="">{{$t('m.All')}}</Dropdown-item>
@@ -32,7 +32,7 @@
           </li>
           <li>
             <Input id="keyword" @on-enter="changeRoute" @on-click="changeRoute" v-model="query.keyword"
-                   icon="ios-search-strong" placeholder="Keyword"/>
+                   icon="ios-search" placeholder="Từ khóa"/>
           </li>
         </ul>
       </div>
@@ -47,16 +47,16 @@
                 {{contest.title}}
               </a>
               <template v-if="contest.contest_type != 'Public'">
-                <Icon type="ios-locked-outline" size="20"></Icon>
+                <Icon type="ios-lock-outline" size="20"></Icon>
               </template>
             </p>
             <ul class="detail">
               <li>
-                <Icon type="calendar" color="#3091f2"></Icon>
+                <Icon type="md-calendar" color="#3091f2"></Icon>
                 {{contest.start_time | localtime('YYYY-M-D HH:mm') }}
               </li>
               <li>
-                <Icon type="android-time" color="#3091f2"></Icon>
+                <Icon type="md-time" color="#3091f2"></Icon>
                 {{getDuration(contest.start_time, contest.end_time)}}
               </li>
               <li>
@@ -67,13 +67,13 @@
             </ul>
             </Col>
             <Col :span="4" style="text-align: center">
-            <Tag type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag>
+              <Tag type="dot" :color="CONTEST_STATUS_REVERSE[contest.status].color">{{$t('m.' + CONTEST_STATUS_REVERSE[contest.status].name.replace(/ /g, "_"))}}</Tag>
             </Col>
           </Row>
         </li>
       </ol>
     </Panel>
-    <Pagination :total="total" :page-size.sync="limit" @on-change="changeRoute" :current.sync="page" :show-sizer="true" @on-page-size-change="changeRoute"></Pagination>
+    <Pagination :total="total" :pageSize="limit" @on-change="getContestList" :current.sync="page"></Pagination>
     </Col>
   </Row>
 
@@ -107,7 +107,7 @@
         rows: '',
         contests: [],
         CONTEST_STATUS_REVERSE: CONTEST_STATUS_REVERSE,
-//      for password modal use
+        // for password modal use
         cur_contest_id: ''
       }
     },
@@ -142,7 +142,6 @@
         let query = Object.assign({}, this.query)
         query.page = this.page
         query.limit = this.limit
-
         this.$router.push({
           name: 'contest-list',
           query: utils.filterEmptyValue(query)

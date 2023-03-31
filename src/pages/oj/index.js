@@ -8,8 +8,8 @@ import VueClipboard from 'vue-clipboard2'
 import VueAnalytics from 'vue-analytics'
 import { GOOGLE_ANALYTICS_ID } from '@/utils/constants'
 
-import iView from 'iview'
-import 'iview/dist/styles/iview.css'
+import iView from 'view-design'
+import 'view-design/dist/styles/iview.css'
 
 import Panel from '@oj/components/Panel.vue'
 import VerticalMenu from '@oj/components/verticalMenu/verticalMenu.vue'
@@ -41,7 +41,7 @@ Vue.config.productionTip = false
 Vue.use(iView, {
   i18n: (key, value) => i18n.t(key, value)
 })
-
+Vue.config.devtools = false
 Vue.use(VueClipboard)
 Vue.use(highlight)
 Vue.use(katex)

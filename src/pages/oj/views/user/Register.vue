@@ -8,24 +8,24 @@
       </FormItem>
       <FormItem prop="email">
         <Input v-model="formRegister.email" :placeholder="$t('m.Email_Address')" size="large" @on-enter="handleRegister">
-        <Icon type="ios-email-outline" slot="prepend"></Icon>
+        <Icon type="ios-mail-outline" slot="prepend"></Icon>
         </Input>
       </FormItem>
       <FormItem prop="password">
         <Input type="password" v-model="formRegister.password" :placeholder="$t('m.RegisterPassword')" size="large" @on-enter="handleRegister">
-        <Icon type="ios-locked-outline" slot="prepend"></Icon>
+        <Icon type="ios-lock-outline" slot="prepend"></Icon>
         </Input>
       </FormItem>
       <FormItem prop="passwordAgain">
         <Input type="password" v-model="formRegister.passwordAgain" :placeholder="$t('m.Password_Again')" size="large" @on-enter="handleRegister">
-        <Icon type="ios-locked-outline" slot="prepend"></Icon>
+        <Icon type="ios-lock-outline" slot="prepend"></Icon>
         </Input>
       </FormItem>
       <FormItem prop="captcha" style="margin-bottom:10px">
         <div class="oj-captcha">
           <div class="oj-captcha-code">
             <Input v-model="formRegister.captcha" :placeholder="$t('m.Captcha')" size="large" @on-enter="handleRegister">
-            <Icon type="ios-lightbulb-outline" slot="prepend"></Icon>
+            <Icon type="ios-bulb-outline" slot="prepend"></Icon>
             </Input>
           </div>
           <div class="oj-captcha-img">
@@ -45,7 +45,6 @@
         {{$t('m.UserRegister')}}
       </Button>
       <Button
-        type="ghost"
         @click="switchMode('login')"
         class="btn" long>
         {{$t('m.Already_Registed')}}
@@ -67,7 +66,9 @@
     data () {
       const CheckUsernameNotExist = (rule, value, callback) => {
         api.checkUsernameOrEmail(value, undefined).then(res => {
-          if (res.data.data.username === true) {
+          if (/^[a-zA-Z0-9_]{3,30}$/.test(value) === false) {
+            callback(new Error(this.$i18n.t('m.username_not_valid')))
+          } else if (res.data.data.username === true) {
             callback(new Error(this.$i18n.t('m.The_username_already_exists')))
           } else {
             callback()
