@@ -2,12 +2,12 @@
   <div>
     <Panel>
       <div slot="title">{{$t('m.Problems_List')}}</div>
-      <Table v-if="contestRuleType == 'ACM' || OIContestRealTimePermission"
+      <Table style="cursor:pointer;" v-if="contestRuleType == 'ACM' || OIContestRealTimePermission"
              :columns="ACMTableColumns"
              :data="problems"
              @on-row-click="goContestProblem"
              :no-data-text="$t('m.No_Problems')"></Table>
-      <Table v-else
+      <Table style="cursor:pointer;" v-else
              :data="problems"
              :columns="OITableColumns"
              @on-row-click="goContestProblem"
@@ -41,9 +41,9 @@
             key: 'submission_number'
           },
           {
-            title: this.$i18n.t('m.AC_Rate'),
+            title: this.$i18n.t('m.AC_Count'),
             render: (h, params) => {
-              return h('span', this.getACRate(params.row.accepted_number, params.row.submission_number))
+              return h('span', params.row.accepted_number)
             }
           }
         ],

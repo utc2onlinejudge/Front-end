@@ -17,6 +17,7 @@ export const m = {
   Contest: 'Contest',
   Contest_List: 'Contest List',
   Create_Contest: 'Create Contest',
+  AboutUs: 'About Us',
   // User.vue
   User_User: 'User',
   Import_User: 'Import User',
@@ -30,7 +31,9 @@ export const m = {
   User_Type: 'User Type',
   Problem_Permission: 'Problem Permission',
   Two_Factor_Auth: 'Two Factor Auth',
-  Is_Disabled: 'Is Disabled',
+  Is_Disabled: 'Is Baned',
+  User_Title: 'User Title',
+  User_Title_Color: 'User Title Color',
   // Announcement.vue
   General_Announcement: 'Announcement',
   Announcement_Title: 'Title',
@@ -49,6 +52,13 @@ export const m = {
   Footer: 'Footer',
   Allow_Register: 'Allow Register',
   Submission_List_Show_All: 'Submission List Show All',
+  Sort: 'Sort',
+  Sort_Name: 'Sort Name',
+  Sort_Permission: 'Sort Permission',
+  Add_Sort: 'Add Sort',
+  Allow_Forum: 'Open Forum',
+  Allow_Reply: 'Allow Reply',
+  Allow_Forum_FAQ: 'When closing, access to the forum is Redirected to 404 and Cannot post!',
   // JudgeServer.vue
   Judge_Server_Token: 'Judge Server Token',
   Judge_Server_Info: 'Judge Server',
@@ -96,7 +106,7 @@ export const m = {
   Low: 'Low',
   Tag: 'Tag',
   New_Tag: 'New Tag',
-   // ProblemList.vue
+  // ProblemList.vue
   Contest_Problem_List: 'Contest Problem List',
   // Contest.vue
   ContestTitle: 'Title',

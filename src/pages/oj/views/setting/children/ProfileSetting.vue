@@ -32,16 +32,16 @@
         </div>
         <ButtonGroup vertical class="cropper-btn">
           <Button @click="rotate('left')">
-            <Icon type="arrow-return-left" size="20"></Icon>
+            <Icon type="ios-undo" size="20"></Icon>
           </Button>
           <Button @click="rotate('right')">
-            <Icon type="arrow-return-right" size="20"></Icon>
+            <Icon type="ios-share-alt" size="20"></Icon>
           </Button>
           <Button @click="reselect">
-            <Icon type="refresh" size="20"></Icon>
+            <Icon type="md-refresh" size="20"></Icon>
           </Button>
           <Button @click="finishCrop">
-            <Icon type="checkmark-round" size="20"></Icon>
+            <Icon type="md-checkmark" size="20"></Icon>
           </Button>
         </ButtonGroup>
         <div class="cropper-preview" :style="previewStyle">
@@ -55,7 +55,7 @@
            title="Upload the avatar">
       <div class="upload-modal">
         <p class="notice">Your avatar will be set to:</p>
-        <img :src="uploadImgSrc"/>
+        <img :src="uploadImgSrc" width="300px"	background-position: center/>
       </div>
       <div slot="footer">
         <Button @click="uploadAvatar" :loading="loadingUploadBtn">upload</Button>
@@ -66,16 +66,16 @@
     <Form ref="formProfile" :model="formProfile">
       <Row type="flex" :gutter="30" justify="space-around">
         <Col :span="11">
-          <FormItem label="Real Name">
+          <FormItem label="Họ tên">
             <Input v-model="formProfile.real_name"/>
           </FormItem>
-          <Form-item label="School">
+          <Form-item label="Trường học">
             <Input v-model="formProfile.school"/>
           </Form-item>
-          <Form-item label="Major">
+          <Form-item label="Chuyên ngành">
             <Input v-model="formProfile.major"/>
           </Form-item>
-          <FormItem label="Language">
+          <FormItem label="Ngôn ngữ">
             <Select v-model="formProfile.language">
               <Option v-for="lang in languages" :key="lang.value" :value="lang.value">{{lang.label}}</Option>
             </Select>

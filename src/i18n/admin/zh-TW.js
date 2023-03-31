@@ -17,6 +17,7 @@ export const m = {
   Contest: '比賽',
   Contest_List: '比賽列表',
   Create_Contest: '建立比賽',
+  AboutUs: '關於我們',
   // User.vue
   User_User: '使用者',
   Import_User: '匯入使用者',
@@ -30,7 +31,9 @@ export const m = {
   User_Type: '帳號類型',
   Problem_Permission: '試題權限',
   Two_Factor_Auth: '兩步驟驗證',
-  Is_Disabled: '是否禁用',
+  Is_Disabled: '是否封禁',
+  User_Title: '頭銜',
+  User_Title_Color: '頭銜',
   // Announcement.vue
   General_Announcement: '公告',
   Announcement_Title: '標題',
@@ -49,6 +52,13 @@ export const m = {
   Footer: '頁尾',
   Allow_Register: '是否允許註冊',
   Submission_List_Show_All: '顯示全部題目的提交',
+  Sort: '板塊',
+  Sort_Name: '板塊名稱',
+  Sort_Permission: '板塊許可權',
+  Add_Sort: '添加板塊',
+  Allow_Forum: '是否開啟論壇',
+  Allow_Reply: '是否允許回復',
+  Allow_Forum_FAQ: '關閉時，訪問論壇重定向至404，且無法發帖!',
   // JudgeServer.vue
   Judge_Server_Token: 'Judge 伺服器 Token',
   Judge_Server_Info: 'Judge 伺服器',

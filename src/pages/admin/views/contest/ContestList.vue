@@ -5,7 +5,7 @@
         <el-input
           v-model="keyword"
           prefix-icon="el-icon-search"
-          placeholder="Keywords">
+          placeholder="Từ khóa">
         </el-input>
       </div>
       <el-table
@@ -61,7 +61,7 @@
           width="100"
           label="Visible">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.visible"
+            <el-switch style="cursor:pointer;" v-model="scope.row.visible"
                        active-text=""
                        inactive-text=""
                        @change="handleVisibleSwitch(scope.row)">

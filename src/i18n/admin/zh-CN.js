@@ -17,6 +17,7 @@ export const m = {
   Contest: '比赛&练习',
   Contest_List: '比赛列表',
   Create_Contest: '创建比赛',
+  AboutUs: '关于我们',
   // User.vue
   User_User: '用户',
   Import_User: '导入用户',
@@ -30,7 +31,9 @@ export const m = {
   User_Type: '用户类型',
   Problem_Permission: '问题权限',
   Two_Factor_Auth: '双因素认证',
-  Is_Disabled: '是否禁用',
+  Is_Disabled: '是否封禁',
+  User_Title: '头衔',
+  User_Title_Color: '头衔颜色',
   // Announcement.vue
   General_Announcement: '公告',
   Announcement_Title: '标题',
@@ -49,6 +52,13 @@ export const m = {
   Footer: '页脚',
   Allow_Register: '是否允许注册',
   Submission_List_Show_All: '显示全部题目的提交',
+  Sort: '板块',
+  Sort_Name: '板块名称',
+  Sort_Permission: '板块权限',
+  Add_Sort: '添加板块',
+  Allow_Forum: '是否开放论坛',
+  Allow_Reply: '是否允许回复',
+  Allow_Forum_FAQ: '关闭时,访问论坛重定向至 404, 且无法发帖!',
   // JudgeServer.vue
   Judge_Server_Token: '判题服务器接口',
   Judge_Server_Info: '判题服务器',

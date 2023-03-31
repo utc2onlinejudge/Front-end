@@ -2,7 +2,7 @@
   <div>
     <el-input
       v-model="keyword"
-      placeholder="Keywords"
+      placeholder="Từ khóa"
       prefix-icon="el-icon-search">
     </el-input>
     <el-table :data="problems" v-loading="loading">

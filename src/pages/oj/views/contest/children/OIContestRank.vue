@@ -1,10 +1,17 @@
+<style>
+  .ivu-table-fixed {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+  }
+</style>
+
 <template>
   <Panel shadow>
     <div slot="title">{{ contest.title }}</div>
     <div slot="extra">
       <screen-full :height="18" :width="18" class="screen-full"></screen-full>
       <Poptip trigger="hover" placement="left-start">
-        <Icon type="android-settings" size="20"></Icon>
+        <Icon type="md-settings" size="20"></Icon>
         <div slot="content" id="switches">
           <p>
             <span>{{$t('m.Menu')}}</span>
@@ -21,7 +28,7 @@
             <i-switch v-model="showRealName"></i-switch>
           </p>
           <p>
-            <Button type="primary" size="small" @click="downloadRankCSV">{{$t('m.download_csv')}}</Button>
+            <Button type="primary" ghost size="small" @click="downloadRankCSV">{{$t('m.download_csv')}}</Button>
           </p>
         </div>
       </Poptip>
@@ -29,7 +36,7 @@
     <div v-show="showChart" class="echarts">
       <ECharts :options="options" ref="chart" auto-resize></ECharts>
     </div>
-    <Table ref="tableRank" class="auto-resize" :columns="columns" :data="dataRank" disabled-hover></Table>
+    <Table ref="tableRank" :columns="columns" :data="dataRank" disabled-hover></Table>
     <Pagination :total="total"
                 :page-size.sync="limit"
                 :current.sync="page"
@@ -44,6 +51,7 @@
   import Pagination from '@oj/components/Pagination'
   import ContestRankMixin from './contestRankMixin'
   import utils from '@/utils/utils'
+  import { USER_GRADE } from '@/utils/constants'
 
   export default {
     name: 'acm-contest-rank',
@@ -60,6 +68,7 @@
           {
             align: 'center',
             width: 60,
+            fixed: 'left',
             render: (h, params) => {
               return h('span', {}, params.index + (this.page - 1) * this.limit + 1)
             }
@@ -67,27 +76,58 @@
           {
             title: this.$i18n.t('m.User_User'),
             align: 'center',
+            minWidth: 110,
+            fixed: 'left',
             render: (h, params) => {
-              return h('a', {
-                style: {
-                  display: 'inline-block',
-                  'max-width': '150px'
-                },
-                on: {
-                  click: () => {
-                    this.$router.push(
-                      {
-                        name: 'user-home',
-                        query: {username: params.row.user.username}
-                      })
+              if (params.row.title) {
+                return h('a', {
+                  style: {
+                    'display': 'inline-block',
+                    'max-width': '150px',
+                    'font-weight': 600,
+                    'color': params.row.title_color
+                  },
+                  attrs: {
+                    'title': params.row.title + ' ' + params.row.user.username
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push(
+                        {
+                          name: 'user-home',
+                          query: {username: params.row.user.username}
+                        })
+                    }
                   }
-                }
-              }, params.row.user.username)
+                }, params.row.user.username)
+              } else {
+                return h('a', {
+                  style: {
+                    'display': 'inline-block',
+                    'max-width': '150px',
+                    'font-weight': 600,
+                    'color': USER_GRADE[params.row.grade].color
+                  },
+                  attrs: {
+                    'title': USER_GRADE[params.row.grade].name + ' ' + params.row.user.username
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push(
+                        {
+                          name: 'user-home',
+                          query: {username: params.row.user.username}
+                        })
+                    }
+                  }
+                }, params.row.user.username)
+              }
             }
           },
           {
             title: this.$i18n.t('m.Total_Score'),
             align: 'center',
+            minWidth: 110,
             render: (h, params) => {
               return h('a', {
                 on: {
@@ -200,6 +240,7 @@
         problems.forEach(problem => {
           this.columns.push({
             align: 'center',
+            minWidth: 100,
             key: problem.id,
             renderHeader: (h, params) => {
               return h('a', {

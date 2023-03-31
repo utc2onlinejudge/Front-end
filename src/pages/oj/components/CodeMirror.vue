@@ -10,11 +10,11 @@
         </Select>
 
         <Tooltip :content="this.$i18n.t('m.Reset_to_default_code_definition')" placement="top" style="margin-left: 10px">
-          <Button icon="refresh" @click="onResetClick"></Button>
+          <Button icon="md-refresh" @click="onResetClick"></Button>
         </Tooltip>
 
         <Tooltip :content="this.$i18n.t('m.Upload_file')" placement="top" style="margin-left: 10px">
-          <Button icon="upload" @click="onUploadFile"></Button>
+          <Button icon="md-cloud-upload" @click="onUploadFile"></Button>
         </Tooltip>
 
         <input type="file" id="file-uploader" style="display: none" @change="onUploadFileDone">
@@ -46,9 +46,10 @@
 
   // mode
   import 'codemirror/mode/clike/clike.js'
+  import 'codemirror/mode/javascript/javascript.js'
+  import 'codemirror/mode/php/php.js'
   import 'codemirror/mode/python/python.js'
   import 'codemirror/mode/go/go.js'
-  import 'codemirror/mode/javascript/javascript.js'
 
   // active-line.js
   import 'codemirror/addon/selection/active-line.js'
@@ -58,6 +59,10 @@
   import 'codemirror/addon/fold/foldgutter.js'
   import 'codemirror/addon/fold/brace-fold.js'
   import 'codemirror/addon/fold/indent-fold.js'
+
+  // matchBracket
+  import 'codemirror/addon/edit/matchbrackets.js'
+  import 'codemirror/addon/edit/closebrackets.js'
 
   export default {
     name: 'CodeMirror',
@@ -89,10 +94,13 @@
         options: {
           // codemirror options
           tabSize: 4,
+          indentUnit: 4,
           mode: 'text/x-csrc',
           theme: 'solarized',
           lineNumbers: true,
           line: true,
+          matchBrackets: true,
+          autoCloseBrackets: true,
           // 代码折叠
           foldGutter: true,
           gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
@@ -185,6 +193,6 @@
   }
   .CodeMirror-scroll {
     min-height: 300px;
-    max-height: 1000px;
+    max-height: 500px;
   }
 </style>

@@ -343,7 +343,7 @@
           spj_compile_ok: false,
           test_case_id: '',
           test_case_score: [],
-          rule_type: 'ACM',
+          rule_type: 'OI',
           hint: '',
           source: '',
           io_mode: {'io_mode': 'Standard IO', 'input': 'input.txt', 'output': 'output.txt'}
@@ -469,10 +469,25 @@
           return
         }
         let fileList = response.data.info
-        for (let file of fileList) {
-          file.score = (100 / fileList.length).toFixed(0)
-          if (!file.output_name && this.problem.spj) {
-            file.output_name = '-'
+        let problemScore = 100
+        if (this.problem.difficulty === 'Mid') {
+          problemScore = 150
+        } else if (this.problem.difficulty === 'High') {
+          problemScore = 300
+        }
+        let totalTC = fileList.length
+        let eachTestScore = Math.max(1, Math.floor(problemScore / totalTC))
+        let remainScore = problemScore % totalTC
+        if (totalTC * eachTestScore >= problemScore) {
+          remainScore = 0
+        }
+        for (let i = 0; i < totalTC; i++) {
+          fileList[i].score = (eachTestScore).toFixed(0)
+          if (totalTC - i <= remainScore) {
+            fileList[i].score = (eachTestScore + 1).toFixed(0)
+          }
+          if (!fileList[i].output_name && this.problem.spj) {
+            fileList[i].output_name = '-'
           }
         }
         this.problem.test_case_score = fileList
@@ -534,6 +549,11 @@
             this.$error(this.error.spj)
             return
           }
+        }
+        if (this.problem.memory_limit > 256) {
+          this.error.memory_limit = 'Memory limit shouldn\'t greater than  256'
+          this.$error(this.error.memory_limit)
+          return
         }
         if (!this.problem.languages.length) {
           this.error.languages = 'Please choose at least one language for problem'
@@ -640,7 +660,7 @@
 </style>
 
 <style>
-  .problem-tag-poper {
+.problem-tag-poper {
     width: 200px !important;
   }
   .dialog-compile-error {

@@ -8,7 +8,7 @@
       </FormItem>
       <FormItem prop="password">
         <Input type="password" v-model="formLogin.password" :placeholder="$t('m.LoginPassword')" size="large" @on-enter="handleLogin">
-        <Icon type="ios-locked-outline" slot="prepend"></Icon>
+        <Icon type="ios-lock-outline" slot="prepend"></Icon>
         </Input>
       </FormItem>
       <FormItem prop="tfa_code" v-if="tfaRequired">
@@ -41,7 +41,7 @@
     data () {
       const CheckRequiredTFA = (rule, value, callback) => {
         if (value !== '') {
-          api.tfaRequiredCheck(value).then(res => {
+          api.tfaRequiredCheck(value.toLowerCase()).then(res => {
             this.tfaRequired = res.data.data.result
           })
         }

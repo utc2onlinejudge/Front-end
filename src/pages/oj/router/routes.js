@@ -5,16 +5,22 @@ import {
   Announcements,
   ApplyResetPassword,
   FAQ,
+  AboutUs,
   Home,
   Logout,
   NotFound,
   OIRank,
+  ExperienceRank,
   Problem,
   ProblemList,
   ResetPassword,
   SubmissionDetails,
   SubmissionList,
-  UserHome
+  UserHome,
+  IDE,
+  Forum,
+  ForumList,
+  ForumPost
 } from '../views'
 
 import * as Contest from '@oj/views/contest'
@@ -24,7 +30,7 @@ export default [
   {
     name: 'home',
     path: '/',
-    meta: {title: 'Home'},
+    meta: {title: 'Học lập trình tương tác trực tuyến'},
     component: Home
   },
   {
@@ -48,38 +54,38 @@ export default [
   {
     name: 'problem-list',
     path: '/problem',
-    meta: {title: 'Problem List'},
+    meta: {title: 'Danh sách bài tập'},
     component: ProblemList
   },
   {
     name: 'problem-details',
     path: '/problem/:problemID',
-    meta: {title: 'Problem Details'},
+    meta: {title: 'Chi tiết bài tập'},
     component: Problem
   },
   {
     name: 'submission-list',
     path: '/status',
-    meta: {title: 'Submission List'},
+    meta: {title: 'Danh sách bài nộp'},
     component: SubmissionList
   },
   {
     name: 'submission-details',
     path: '/status/:id/',
-    meta: {title: 'Submission Details'},
+    meta: {title: 'Chi tiết bài nộp'},
     component: SubmissionDetails
   },
   {
     name: 'contest-list',
     path: '/contest',
-    meta: {title: 'Contest List'},
+    meta: {title: 'Danh sách kỳ thi'},
     component: Contest.ContestList
   },
   {
     name: 'contest-details',
     path: '/contest/:contestID/',
     component: Contest.ContestDetails,
-    meta: {title: 'Contest Details'},
+    meta: {title: 'Chi tiết cuộc thi'},
     children: [
       {
         name: 'contest-submission-list',
@@ -116,14 +122,20 @@ export default [
   {
     name: 'acm-rank',
     path: '/acm-rank',
-    meta: {title: 'ACM Rankings'},
+    meta: {title: 'Bảng xếp hạng ACM'},
     component: ACMRank
   },
   {
     name: 'oi-rank',
     path: '/oi-rank',
-    meta: {title: 'OI Rankings'},
+    meta: {title: 'Bảng xếp hạng OI'},
     component: OIRank
+  },
+  {
+    name: 'experience-rank',
+    path: '/experience-rank',
+    meta: {title: 'Bảng xếp hạng Điểm kinh nghiệm'},
+    component: ExperienceRank
   },
   {
     name: 'user-home',
@@ -162,20 +174,51 @@ export default [
     ]
   },
   {
-    path: '/about',
-    name: 'about',
-    meta: {title: 'About'},
+    path: '/judger',
+    name: 'judger',
+    meta: {title: 'Thông tin máy chấm'},
     component: About
   },
   {
     path: '/faq',
     name: 'faq',
-    meta: {title: 'FAQ'},
+    meta: {title: 'Câu hỏi thường gặp (FAQ)'},
     component: FAQ
   },
   {
+    path: '/about',
+    name: 'AboutUs',
+    meta: {title: 'Về chúng tôi'},
+    component: AboutUs
+  },
+  {
+    path: '/ide',
+    name: 'IDE',
+    meta: {title: 'Live IDE'},
+    component: IDE
+  },
+  {
+    name: 'Forum-list',
+    path: '/forum',
+    meta: {title: 'Danh sách thảo luận'},
+    component: ForumList
+  },
+  {
+    name: 'Forum-post',
+    path: '/post',
+    meta: {title: 'Tạo thảo luận'},
+    component: ForumPost
+  },
+  {
+    name: 'Forum-details',
+    path: '/forum/:forumpostID',
+    meta: {title: 'Chi tiết thảo luận'},
+    component: Forum
+  },
+  {
+    name: 'NotFound',
     path: '*',
-    meta: {title: '404'},
+    meta: {title: '404 Not Found'},
     component: NotFound
   }
 ]

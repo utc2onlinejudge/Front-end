@@ -7,7 +7,7 @@
         <el-input
           v-model="keyword"
           prefix-icon="el-icon-search"
-          placeholder="Keywords">
+          placeholder="Từ khóa">
         </el-input>
       </div>
       <el-table :data="problems"

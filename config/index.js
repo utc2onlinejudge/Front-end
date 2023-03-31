@@ -1,11 +1,9 @@
 'use strict'
-
 // Template version: 1.1.1
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
 require('dotenv').config()
-
 const commonProxy = {
   onProxyReq: (proxyReq, req, res) => {
     proxyReq.setHeader('Referer', process.env.TARGET)

@@ -4,8 +4,9 @@
       <div slot="title">{{$t('m.Compiler')}} & {{$t('m.Judger')}}</div>
       <div class="content markdown-body">
         <ul>
-          <li v-for="lang in languages">{{lang.name}} ( {{lang.description}} )
-            <pre>{{lang.config.compile.compile_command}}</pre>
+          <li v-for="lang in languages" :key="lang.name">{{lang.name}} ( {{lang.description}} )
+            <pre v-if="lang.config.compile">{{lang.config.compile.compile_command}}</pre>
+            <pre v-else>{{lang.config.run.command}}</pre>
           </li>
         </ul>
       </div>
@@ -19,6 +20,7 @@
           <li><b>{{$t('m.Compile_Error')}}</b> :	{{$t('m.Compile_Error_Description')}}
       </li>
           <li><b>{{$t('m.Accepted')}}</b> :	{{$t('m.Accepted_Description')}}</li>
+          <li><b>{{$t('m.Partial_Accepted')}}</b> :	{{$t('m.Partial_Accepted_Description')}}</li>
           <li><b>{{$t('m.Wrong_Answer')}}</b> :	{{$t('m.Wrong_Answer_Description')}}</li>
           <li>
             <b>{{$t('m.Runtime_Error')}}</b>
@@ -39,7 +41,6 @@
 
 <script>
   import utils from '@/utils/utils'
-
   export default {
     data () {
       return {

@@ -1,55 +1,69 @@
+<style>
+  .utterances {
+      max-width: 100%;
+      width: 100%;
+  }
+</style>
 <template>
   <div class="flex-container">
     <div id="problem-main">
       <!--problem main-->
       <Panel :padding="40" shadow>
-        <div slot="title">{{problem.title}}</div>
+        <div class="report"><a title="Báo lỗi bài tập này" target="_blank" onclick="event.preventDefault();window.open('https://github.com/luyencode/comments/issues/365', '_blank');" rel="noreferrer nofollow noopener"><i class="ivu-icon ivu-icon-md-bug"></i> {{$t('m.Report')}}</a></div>
+        <h2 slot="title" class="problem-title">{{problem._id}} - {{problem.title}}</h2>
         <div id="problem-content" class="markdown-body" v-katex>
-          <p class="title">{{$t('m.Description')}}</p>
+          <h3 class="title">{{$t('m.Description')}}</h3>
           <p class="content" v-html=problem.description></p>
           <!-- {{$t('m.music')}} -->
-          <p class="title">{{$t('m.Input')}} <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></p>
+          <h3 class="title">{{$t('m.Input')}} <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></h3>
           <p class="content" v-html=problem.input_description></p>
 
-          <p class="title">{{$t('m.Output')}} <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
+          <h3 class="title">{{$t('m.Output')}} <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></h3>
           <p class="content" v-html=problem.output_description></p>
-
+          <h3 class="title">{{$t('m.Sample')}}</h3>
           <div v-for="(sample, index) of problem.samples" :key="index">
             <div class="flex-container sample">
               <div class="sample-input">
-                <p class="title">{{$t('m.Sample_Input')}} {{index + 1}}
+                <p class="title" style="font-size: 15px;">{{$t('m.Sample_Input')}} #{{index + 1}}
                   <a class="copy"
-                     v-clipboard:copy="sample.input"
+                     v-clipboard:copy="sample.input" 
                      v-clipboard:success="onCopy"
                      v-clipboard:error="onCopyError">
-                    <Icon type="clipboard"></Icon>
+                    <Icon type="md-clipboard"></Icon>
                   </a>
                 </p>
                 <pre>{{sample.input}}</pre>
               </div>
               <div class="sample-output">
-                <p class="title">{{$t('m.Sample_Output')}} {{index + 1}}</p>
+                <p class="title" style="font-size: 15px;">{{$t('m.Sample_Output')}} #{{index + 1}}
+                  <a class="copy"
+                     v-clipboard:copy="sample.output" 
+                     v-clipboard:success="onCopy"
+                     v-clipboard:error="onCopyError">
+                    <Icon type="md-clipboard"></Icon>
+                  </a>
+                </p>
                 <pre>{{sample.output}}</pre>
               </div>
             </div>
           </div>
 
           <div v-if="problem.hint">
-            <p class="title">{{$t('m.Hint')}}</p>
+            <h3 class="title">{{$t('m.Hint')}}</h3>
             <Card dis-hover>
               <div class="content" v-html=problem.hint></div>
             </Card>
           </div>
 
           <div v-if="problem.source">
-            <p class="title">{{$t('m.Source')}}</p>
-            <p class="content">{{problem.source}}</p>
+            <h3 class="title">{{$t('m.Source')}}</h3>
+            <p class="content" v-html="problem.source"></p>
           </div>
 
         </div>
       </Panel>
       <!--problem main end-->
-      <Card :padding="20" id="submit-code" dis-hover>
+      <Card :padding="20" id="submit-code" ref="submit-code" dis-hover>
         <CodeMirror :value.sync="code"
                     :languages="problem.languages"
                     :language="language"
@@ -62,8 +76,11 @@
             <div class="status" v-if="statusVisible">
               <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
                 <span>{{$t('m.Status')}}</span>
-                <Tag type="dot" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
-                  {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
+                <Tag v-if="this.contestID" type="dot" :color="submissionStatus.color" title="Click để xem chi tiết" @click.native="handleRoute('/status/'+submissionId+'?problem=' + problem._id + '&contest=' + contestID)">
+                  {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}  {{this.resultSummary}}
+                </Tag>
+                <Tag v-else type="dot" :color="submissionStatus.color" title="Click để xem chi tiết" @click.native="handleRoute('/status/'+submissionId+'?problem=' + problem._id)">
+                  {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}  {{this.resultSummary}}
                 </Tag>
               </template>
               <template v-else-if="this.contestID && !OIContestRealTimePermission">
@@ -90,7 +107,7 @@
                 <Input v-model="captchaCode" class="captcha-code"/>
               </div>
             </template>
-            <Button type="warning" icon="edit" :loading="submitting" @click="submitCode"
+            <Button type="warning" icon="md-cloud-upload" :loading="submitting" @click="submitCode"
                     :disabled="problemSubmitDisabled || submitted"
                     class="fl-right">
               <span v-if="submitting">{{$t('m.Submitting')}}</span>
@@ -99,10 +116,26 @@
           </Col>
         </Row>
       </Card>
+      <Card :padding="20" dis-hover>
+        <h3 style="font-size: 20px;">Bình luận</h3>
+        <ul style="margin-left: 30px;margin-top: 20px;">
+          <li><a rel="nofollow noopener noreferrer" target="_blank" class="animation-text" href="https://gist.github.com/nguyenvanhieuvn/d3e5e20c44ef9d565fa3d7b9ebabfc65">Quy tắc thảo luận &#38; hướng dẫn đăng bình luận ✍️</a></li>
+          <li><span style="font-weight: 600;">NÊN</span> thảo luận giải pháp 😘, <span style="font-weight: 600;">KHÔNG NÊN</span> chia sẻ code 😐</li>
+          <li title="Không khuyến khích các bạn chia sẻ lời giải nha">Mọi source code đăng mà không được ẩn sẽ bị BOT xóa tự động 😭</li>
+          <li title="BOT của Luyện Code cũng sẽ thường xuyên kiểm duyệt nha"><span style="font-weight: 600;">KHÔNG NÊN</span> để lộ thông tin cá nhân (SĐT, email, Facebook, ...)</li>
+          <li>Tham gia thảo luận bài tập tại
+            <span style="position: relative;">
+              <a href="https://discord.gg/hpeRrbccfZ" target="_blank" style="position: absolute; left: 10px">
+                <img alt="Discord" src="https://img.shields.io/discord/879371214806712340?label=Discord&logo=Discord">
+              </a>
+            </span>
+          </li>
+        </ul>
+        <script type="application/javascript" src="https://utteranc.es/client.js" repo="luyencode/comments" issue-term="url" theme="github-light" crossorigin="anonymous" async> </script>
+      </Card>
     </div>
-
     <div id="right-column">
-      <VerticalMenu @on-click="handleRoute">
+      <VerticalMenu @on-click="handleRoute" style="cursor: pointer;">
         <template v-if="this.contestID">
           <VerticalMenu-item :route="{name: 'contest-problem-list', params: {contestID: contestID}}">
             <Icon type="ios-photos"></Icon>
@@ -110,24 +143,30 @@
           </VerticalMenu-item>
 
           <VerticalMenu-item :route="{name: 'contest-announcement-list', params: {contestID: contestID}}">
-            <Icon type="chatbubble-working"></Icon>
+            <Icon type="md-chatbubbles"></Icon>
             {{$t('m.Announcements')}}
           </VerticalMenu-item>
         </template>
 
-        <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission" :route="submissionRoute">
-          <Icon type="navicon-round"></Icon>
-           {{$t('m.Submissions')}}
-        </VerticalMenu-item>
+        <template v-if="!this.contestID">
+          <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission" onclick="let e = document.getElementById('submit-code');window.scrollTo(0, e.offsetTop);">
+            <Icon type="md-cloud-upload"></Icon>
+              {{$t('m.Submit')}}
+          </VerticalMenu-item>
+          <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission" :route="submissionRoute">
+            <Icon type="md-menu"></Icon>
+              {{$t('m.Submissions')}}
+          </VerticalMenu-item>
+        </template>
 
         <template v-if="this.contestID">
           <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission"
                              :route="{name: 'contest-rank', params: {contestID: contestID}}">
-            <Icon type="stats-bars"></Icon>
+            <Icon type="md-stats"></Icon>
             {{$t('m.Rankings')}}
           </VerticalMenu-item>
           <VerticalMenu-item :route="{name: 'contest-details', params: {contestID: contestID}}">
-            <Icon type="home"></Icon>
+            <Icon type="md-home"></Icon>
             {{$t('m.View_Contest')}}
           </VerticalMenu-item>
         </template>
@@ -135,8 +174,8 @@
 
       <Card id="info">
         <div slot="title" class="header">
-          <Icon type="information-circled"></Icon>
-          <span class="card-title">{{$t('m.Information')}}</span>
+          <Icon type="md-information-circle"></Icon>
+          <span class="card-title">{{$t('m.Information_Problem')}}</span>
         </div>
         <ul>
           <li><p>ID</p>
@@ -147,7 +186,6 @@
           <li>
             <p>{{$t('m.Memory_Limit')}}</p>
             <p>{{problem.memory_limit}}MB</p></li>
-          <li>
           <li>
             <p>{{$t('m.IOMode')}}</p>
             <p>{{problem.io_mode.io_mode}}</p>
@@ -168,7 +206,9 @@
               <Poptip trigger="hover" placement="left-end">
                 <a>{{$t('m.Show')}}</a>
                 <div slot="content">
-                  <Tag v-for="tag in problem.tags" :key="tag">{{tag}}</Tag>
+                  <Tag style="cursor: pointer;" v-for="tag in problem.tags" :key="tag" @click.native="handleRoute('/problem?tag=' + tag)">
+                    {{tag}}
+                  </Tag>
                 </div>
               </Poptip>
             </p>
@@ -180,20 +220,42 @@
         <div slot="title">
           <Icon type="ios-analytics"></Icon>
           <span class="card-title">{{$t('m.Statistic')}}</span>
-          <Button type="ghost" size="small" id="detail" @click="graphVisible = !graphVisible">Details</Button>
+          <Button size="small" id="detail" @click="graphVisible = !graphVisible">{{$t('m.Details')}}</Button>
         </div>
         <div class="echarts">
           <ECharts :options="pie"></ECharts>
         </div>
       </Card>
+      <Card style="margin-top: 20px;" :padding="0" v-if="!this.contestID || OIContestRealTimePermission">
+        <div slot="title" style="font-size: 16px"><i data-v-20c86fbe="" class="ivu-icon ivu-icon-md-document"></i>
+        <span class="card-title">Bài tập tương tự</span>
+        </div>
+        <ul style="margin-left: 30px;margin-bottom: 20px;">
+          <li style="padding: 5px 0px;"  v-for="p in problemList" :key="p.id">
+            <a class="link-style" :href="'/problem/' + p._id">{{p._id}} - {{p.title}}</a>
+          </li>
+        </ul>
+      </Card>
+      <Card style="margin-top: 20px;" :padding="10" v-if="!this.contestID || OIContestRealTimePermission">
+        <div slot="title" style="font-size: 16px;"><i data-v-20c86fbe="" class="ivu-icon ivu-icon-md-heart" style="color: red; font-size:1.2em;"></i>
+        <span class="card-title">Ủng hộ Luyện Code</span>
+        </div>
+        Ủng hộ 10.000đ giúp chúng tôi phát triển website hơn nữa:
+        <ul style="margin-left: 20px;margin-bottom: 10px;">
+          <li style="padding: 5px 0px;"><span style="color: green;">VPBank</span>: Nguyễn Văn Hiếu, STK: 146301158, chi nhánh Đông Đô</li>
+          <li style="padding: 5px 0px;"><span style="color: green;">MoMo</span>: <a style="color: #495060;" target="_blank" href="https://me.momo.vn/nguyenvanhieu">me.momo.vn/nguyenvanhieu</a></li>
+          <li style="padding: 5px 0px;"><span style="color: green;">Paypal</span>: <a style="color: #495060;" target="_blank" href="https://www.paypal.me/nguyenvanhieuvn">paypal.me/nguyenvanhieuvn</a></li>
+        </ul>
+        Nếu thấy website hữu ích, hãy chia sẻ tới bạn bè để cùng nhau học tập và tiến bộ mỗi ngày nhé!
+      </Card>
     </div>
-
+  
     <Modal v-model="graphVisible">
       <div id="pieChart-detail">
         <ECharts :options="largePie" :initOptions="largePieInitOpts"></ECharts>
       </div>
       <div slot="footer">
-        <Button type="ghost" @click="graphVisible=false">{{$t('m.Close')}}</Button>
+        <Button @click="graphVisible=false">{{$t('m.Close')}}</Button>
       </div>
     </Modal>
   </div>
@@ -208,10 +270,8 @@
   import {JUDGE_STATUS, CONTEST_STATUS, buildProblemCodeKey} from '@/utils/constants'
   import api from '@oj/api'
   import {pie, largePie} from './chartData'
-
   // 只显示这些状态的图形占用
   const filtedStatus = ['-1', '-2', '0', '1', '2', '3', '4', '8']
-
   export default {
     name: 'Problem',
     components: {
@@ -224,6 +284,15 @@
         captchaRequired: false,
         graphVisible: false,
         submissionExists: false,
+        problemList: [],
+        problemLimit: 10,
+        query: {
+          keyword: '',
+          difficulty: '',
+          tag: '',
+          page: 1,
+          orderby: '-create_time'
+        },
         captchaCode: '',
         captchaSrc: '',
         contestID: '',
@@ -234,6 +303,7 @@
         theme: 'solarized',
         submissionId: '',
         submitted: false,
+        exited: false,
         result: {
           result: 9
         },
@@ -247,6 +317,9 @@
           created_by: {
             username: ''
           },
+          totalTestCase: 0,
+          ACTestCase: 0,
+          resultSummary: '',
           tags: [],
           io_mode: {'io_mode': 'Standard IO'}
         },
@@ -261,11 +334,24 @@
     },
     beforeRouteEnter (to, from, next) {
       let problemCode = storage.get(buildProblemCodeKey(to.params.problemID, to.params.contestID))
+      let OverallCode = storage.get(buildProblemCodeKey('Overall'))
       if (problemCode) {
+        if (problemCode.code !== '') {
+          next(vm => {
+            vm.language = problemCode.language
+            vm.code = problemCode.code
+            vm.theme = problemCode.theme
+          })
+        } else if (OverallCode) {
+          next(vm => {
+            vm.language = OverallCode.language
+            vm.theme = OverallCode.theme
+          })
+        }
+      } else if (OverallCode && problemCode === null) {
         next(vm => {
-          vm.language = problemCode.language
-          vm.code = problemCode.code
-          vm.theme = problemCode.theme
+          vm.language = OverallCode.language
+          vm.theme = OverallCode.theme
         })
       } else {
         next()
@@ -285,28 +371,37 @@
         api[func](this.problemID, this.contestID).then(res => {
           this.$Loading.finish()
           let problem = res.data.data
+          this.query['tag'] = res.data.data.tags[0]
           this.changeDomTitle({title: problem.title})
           api.submissionExists(problem.id).then(res => {
             this.submissionExists = res.data.data
           })
-          problem.languages = problem.languages.sort()
           this.problem = problem
-          if (problem.statistic_info) {
-            this.changePie(problem)
-          }
-
+          this.changePie(problem)
+          this.getProblemList()
           // 在beforeRouteEnter中修改了, 说明本地有code，无需加载template
           if (this.code !== '') {
             return
           }
+          if (this.language !== 'C' && this.problem.languages.includes(this.language)) {
+            return
+          }
           // try to load problem template
-          this.language = this.problem.languages[0]
+          if (!this.language) {
+            this.language = this.problem.languages[0]
+          }
           let template = this.problem.template
           if (template && template[this.language]) {
             this.code = template[this.language]
           }
         }, () => {
           this.$Loading.error()
+        })
+      },
+      getProblemList () {
+        let offset = 0
+        api.getProblemList(offset, this.problemLimit, this.query).then(res => {
+          this.problemList = res.data.data.results
         })
       },
       changePie (problemData) {
@@ -382,6 +477,16 @@
           let id = this.submissionId
           api.getSubmission(id).then(res => {
             this.result = res.data.data
+            try {
+              this.totalTestCase = res.data.data.info.data.length
+              this.ACTestCase = 0
+              for (let tc of res.data.data.info.data) {
+                if (tc.score > 0) {
+                  this.ACTestCase += 1
+                }
+              }
+              this.resultSummary = '(' + this.ACTestCase + '/' + this.totalTestCase + ')'
+            } catch (e) {}
             if (Object.keys(res.data.data.statistic_info).length !== 0) {
               this.submitting = false
               this.submitted = false
@@ -403,6 +508,9 @@
           return
         }
         this.submissionId = ''
+        this.ACTestCase = 0
+        this.totalTestCase = 0
+        this.resultSummary = ''
         this.result = {result: 9}
         this.submitting = true
         let data = {
@@ -463,10 +571,10 @@
         }
       },
       onCopy (event) {
-        this.$success('Code copied')
+        this.$success('Đã sao chép vào khay nhớ tạm!')
       },
       onCopyError (e) {
-        this.$error('Failed to copy code')
+        this.$error('Có lỗi rồi!')
       }
     },
     computed: {
@@ -480,7 +588,7 @@
       submissionStatus () {
         return {
           text: JUDGE_STATUS[this.result.result]['name'],
-          color: JUDGE_STATUS[this.result.result]['color']
+          color: JUDGE_STATUS[this.result.result]['type']
         }
       },
       submissionRoute () {
@@ -501,6 +609,10 @@
         language: this.language,
         theme: this.theme
       })
+      storage.set(buildProblemCodeKey('Overall'), {
+        language: this.language,
+        theme: this.theme
+      })
       next()
     },
     watch: {
@@ -515,6 +627,11 @@
   .card-title {
     margin-left: 8px;
   }
+  .problem-title {
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: 400;
+  }
 
   .flex-container {
     #problem-main {
@@ -523,17 +640,18 @@
     }
     #right-column {
       flex: none;
-      width: 220px;
+      width: 300px;
     }
   }
 
   #problem-content {
     margin-top: -50px;
+    word-break: break-word;
     .title {
       font-size: 20px;
       font-weight: 400;
       margin: 25px 0 8px 0;
-      color: #3091f2;
+      color: #191a1b;
       .copy {
         padding-left: 8px;
       }
@@ -566,6 +684,7 @@
     margin-bottom: 20px;
     .status {
       float: left;
+      cursor: pointer;
       span {
         margin-right: 10px;
         margin-left: 10px;
@@ -593,7 +712,7 @@
           display: inline-block;
         }
         p:first-child {
-          width: 90px;
+          width: 150px;
         }
         p:last-child {
           float: right;
@@ -608,8 +727,8 @@
 
   #pieChart {
     .echarts {
-      height: 250px;
-      width: 210px;
+      height: 300px;
+      width: 300px;
     }
     #detail {
       position: absolute;
@@ -623,5 +742,26 @@
     width: 500px;
     height: 480px;
   }
+  .animation-text {
+    animation: color-change 1s infinite;
+  }
+  @keyframes color-change {
+  0% { color: black; }
+  50% { color: blue;}
+  100% { color: red; }
+}
+.report {
+  position: absolute;
+  top: 25px; 
+  right: 25px;
+  opacity: 0.5; 
+  color: #495060;
+}
+.report a {
+  color: #495060;
+}
+.report a:hover {
+  color: red;
+}
 </style>
 
